@@ -52,7 +52,10 @@ namespace FightingSimulation
             Console.ReadKey();
             Console.Clear();
 
-
+            //Print monster 1 stats
+            PrintStats(monster1);
+            //Print monster 2 stats
+            PrintStats(monster2);
 
         }
 
