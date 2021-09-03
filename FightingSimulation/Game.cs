@@ -23,45 +23,61 @@ namespace FightingSimulation
         //Monsters
         Monster wompus;
         Monster thwompus;
-        Monster backupWompus;   
+        Monster backupWompus;
         Monster unclePhil;
 
         int currentMonsterIndex = 1;
         public void Run()
         {
+            Start();
 
-            
+            while (!gameOver)
+            {
+                Update();
+            }
+
+        }
+
+        void Start()
+        {
+
+            //Initilize Monster
             wompus.name = "Wompus";
-            wompus.attack = 15.0f;           
+            wompus.attack = 15.0f;
             wompus.defense = 5.0f;
             wompus.health = 20.0f;
 
-            
+
             thwompus.name = "Thwompus";
             thwompus.attack = 15.0f;
             thwompus.defense = 10.0f;
             thwompus.health = 15.0f;
 
-           
+
             backupWompus.name = "Backup Wompus";
             backupWompus.attack = 25.6f;
             backupWompus.defense = 5.0f;
             backupWompus.health = 3.0f;
 
-          
+
             unclePhil.name = "Uncle Phil";
             unclePhil.attack = 100000000000.0f;
             unclePhil.defense = 0f;
             unclePhil.health = 1.0f;
 
-
-
+            //Set Starting fighters
+            currentMonster1 = GetMonster(currentMonsterIndex);
+            currentMonsterIndex++;
+            currentMonster2 = GetMonster(currentMonsterIndex);
 
         }
 
         void Update()
         {
             Battle();
+            UpdateCurrentMonsters();
+            Console.ReadKey(true);
+            Console.Clear();
         }
 
         Monster GetMonster(int monsterIndex)
@@ -88,8 +104,12 @@ namespace FightingSimulation
             {
                 monster = thwompus;
             }
-        }
 
+            return monster;
+        }
+        /// <summary>
+        /// Simulates one turn in the current monster fight
+        /// </summary>
         void Battle()
         {
             //Print monster 1 stats
@@ -106,10 +126,33 @@ namespace FightingSimulation
             damageTaken = Fight(currentMonster2, ref currentMonster1);
             Console.WriteLine(currentMonster1.name + " has taken " + damageTaken);
         }
-
+        /// <summary>
+        /// Updates the current monster to the next monster when one dies.
+        /// Ends the game if all monster in th elist have been used.
+        /// </summary>
         void UpdateCurrentMonsters()
         {
-            if ()
+            //If monster 1 has died..
+            if (currentMonster1.health <= 0)
+            {   
+                //...increment the current monster index and swap out the monster
+                currentMonsterIndex++;
+                currentMonster1 = GetMonster(currentMonsterIndex);
+            }
+            //If monster 2 has died..
+            if (currentMonster2.health <= 0)
+            {
+                //...increment the current monster index and swap out the monster
+                currentMonsterIndex++;
+                currentMonster2 = GetMonster(currentMonsterIndex);
+            }
+            //If either monster is set to "None" and last monster has been set..
+            if (currentMonster2.name == "None" || currentMonster1.name == "None" && currentMonsterIndex >= 4)
+            {
+                //...end the game
+                Console.WriteLine("Simulation Over");
+                gameOver = true;
+            }
         }
 
         String StartBattle(ref Monster monster1, ref Monster monster2)
