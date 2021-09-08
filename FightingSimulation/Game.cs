@@ -36,6 +36,7 @@ namespace FightingSimulation
                 Update();
             }
 
+            End();
         }
 
         void Start()
@@ -66,6 +67,20 @@ namespace FightingSimulation
             unclePhil.health = 1.0f;
 
             ResetCurrentMonsters();
+        }
+
+        /// <summary>
+        /// Updates the scens of the game
+        /// </summary>
+        void Update()
+        {
+            UpdateCurrentScene();
+            Console.Clear();
+        }
+
+        void End()
+        {
+            Console.WriteLine("Guhbah fren");
         }
 
         void ResetCurrentMonsters()
@@ -189,17 +204,6 @@ namespace FightingSimulation
                 gameOver = true;
             }
         }
-        /// <summary>
-        /// Called
-        /// </summary>
-        void Update()
-        {
-            UpdateCurrentScene();
-            Console.Clear();
-        }
-
-
-
 
         Monster GetMonster(int monsterIndex)
         {
