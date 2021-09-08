@@ -29,8 +29,7 @@ namespace FightingSimulation
         int currentMonsterIndex = 0;
         public void Run()
         {
-            int[] number = {1, 2, 2, 4, 5, 6};
-            PrintArray(number);
+
                 Start();
 
             while (!gameOver)
@@ -71,13 +70,7 @@ namespace FightingSimulation
             ResetCurrentMonsters();
         }
 
-        void PrintArray(int[] numbers)
-        {
-            for (int num = 0; num < numbers.Length; num++)
-            {
-                Console.WriteLine(numbers[num]);
-            }          
-        }
+
 
         /// <summary>
         /// Updates the scens of the game
