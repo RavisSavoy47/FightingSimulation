@@ -65,82 +65,136 @@ namespace FightingSimulation
             unclePhil.defense = 0f;
             unclePhil.health = 1.0f;
 
+            ResetCurrentMonsters();
+        }
+
+        void ResetCurrentMonsters()
+        {
+            currentMonsterIndex = 0;
             //Set Starting fighters
             currentMonster1 = GetMonster(currentMonsterIndex);
             currentMonsterIndex++;
             currentMonster2 = GetMonster(currentMonsterIndex);
-
-
-
         }
 
-        void displayCurrentScene()
+        void UpdateCurrentScene()
         {
-            if (currentScene == 0)
+            switch (currentScene)
             {
-                DisplayStartMenu();
-            }
+                case 0:
+                    DisplayStartMenu();
+                    break;
+                case 1:
+                    Battle();
+                    UpdateCurrentMonsters();
+                    Console.ReadKey();
+                    break;
 
-            else if (currentScene == 1)
-            {
-                Battle();
-                UpdateCurrentMonsters();
-                Console.ReadKey(true);
-                Console.Clear();
-            }
-            else if (currentScene == 2)
-            {
-                DisplayRestartMenu();
-            }
+                case 2:
+                    DisplayRestartMenu();
+                    break;
 
+                default:
+                    Console.WriteLine("Invaild scene index");
+                    break;
+            }
         }
-
+        /// <summary>
+        /// Gets an input from the player based on some decision
+        /// </summary>
+        /// <param name="description">The context for the decision</param>
+        /// <param name="option1">The first choice the player has</param>
+        /// <param name="option2">The second choice the player has</param>
+        /// <param name="pauseInvaild">If true, the playe must press a key to continue after inputting an incorrect value</param>
+        /// <returns>A number resprenting which of the two options was choosen. Returns ) if an invaild inputt was recieved</returns>
         int GetInput(string description, string option1, string option2, bool pauseInvaild = false)
         {
+            //Print the context and options
             Console.WriteLine(description);
             Console.WriteLine("1. " + option1);
             Console.WriteLine("2. " + option2);
 
+            //Get player input
             string input = Console.ReadLine();
             int choice = 0;
 
+            //If the player typed 1..
             if (input == "1")
             {
+                //set return variable to be 1
                 choice = 1;
             }
+            //if the player typed 2..
             else if (input == "2")
             {
+                //..set the return variable to be 2
                 choice = 2;
             }
+            //If th eplayer did not type 1 or 2
             else
             {
+                //..let them know the input was invaild
                 Console.WriteLine("Invaild Input");
+
+                //If we want to pause whan an invalid is recieved
                 if (pauseInvaild)
                 {
+                    //..make the player press a key to pause
                     Console.ReadKey(true);
                 }
             }
 
             return choice;
         }
-
+        /// <summary>
+        /// Displays the starting menu. Gives the player the option to start or end the simulation.
+        /// </summary>
         void DisplayStartMenu()
         {
-            GetInput("description", "option1", "option2");
-        }
+            //Get player choice
+            int choice = GetInput("Welcome to Monster Fight Simulator And Uncle Phil", "Start Simulation", "Quit Application");
 
+            //If they choose to start the simulation
+            if (choice == 1)
+            {
+                //..start the battle scene
+                currentScene = 1;
+            }
+            //Otherwise if they chose to exit..
+            else if (choice == 2)
+            {
+                //..end the game
+                gameOver = true;
+            }
+        }
+        /// <summary>
+        /// Displays the Restarting menu. Gives the player the option to play again or end th esimulation.
+        /// </summary>
         void DisplayRestartMenu()
         {
+            //Get player choice
+            int choice = GetInput("Simulation over. Would you like to play again?", "Yes", "No");
 
+            //If the player chose to restart..
+            if (choice == 1)
+            {
+                //..set the current scene to be th estarting scene
+                ResetCurrentMonsters();
+                currentScene = 0;
+            }
+            //If the player chose to exit..
+            else if (choice == 2)
+            {
+                //..ends the game
+                gameOver = true;
+            }
         }
-
+        /// <summary>
+        /// Called
+        /// </summary>
         void Update()
         {
-            Battle();
-            UpdateCurrentMonsters();
-
-            DisplayRestartMenu();
-            Console.ReadKey(true);
+            UpdateCurrentScene();
             Console.Clear();
         }
 
@@ -216,9 +270,9 @@ namespace FightingSimulation
             //If either monster is set to "None" and last monster has been set..
             if (currentMonster2.name == "None" || currentMonster1.name == "None" && currentMonsterIndex >= 4)
             {
-                //...end the game
-                Console.WriteLine("Simulation Over");
-                gameOver = true;
+                //...go to restart menue
+                currentScene = 2;
+
             }
         }
 
