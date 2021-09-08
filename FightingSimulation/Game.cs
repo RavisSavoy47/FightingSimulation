@@ -19,7 +19,7 @@ namespace FightingSimulation
         bool gameOver = false;
         Monster currentMonster1;
         Monster currentMonster2;
-
+        int test = 1;
         //Monsters
         Monster wompus;
         Monster thwompus;
@@ -29,7 +29,9 @@ namespace FightingSimulation
         int currentMonsterIndex = 0;
         public void Run()
         {
-            Start();
+            int[] number = {1, 2, 2, 4, 5, 6};
+            PrintArray(number);
+                Start();
 
             while (!gameOver)
             {
@@ -67,6 +69,14 @@ namespace FightingSimulation
             unclePhil.health = 1.0f;
 
             ResetCurrentMonsters();
+        }
+
+        void PrintArray(int[] numbers)
+        {
+            for (int num = 0; num < numbers.Length; num++)
+            {
+                Console.WriteLine(numbers[num]);
+            }          
         }
 
         /// <summary>
