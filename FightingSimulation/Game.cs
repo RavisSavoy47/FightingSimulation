@@ -25,8 +25,8 @@ namespace FightingSimulation
         Monster thwompus;
         Monster backupWompus;
         Monster unclePhil;
-
-        int currentMonsterIndex = 1;
+        int currentScene = 0;
+        int currentMonsterIndex = 0;
         public void Run()
         {
             Start();
@@ -70,15 +70,82 @@ namespace FightingSimulation
             currentMonsterIndex++;
             currentMonster2 = GetMonster(currentMonsterIndex);
 
+
+
+        }
+
+        void displayCurrentScene()
+        {
+            if (currentScene == 0)
+            {
+                DisplayStartMenu();
+            }
+
+            else if (currentScene == 1)
+            {
+                Battle();
+                UpdateCurrentMonsters();
+                Console.ReadKey(true);
+                Console.Clear();
+            }
+            else if (currentScene == 2)
+            {
+                DisplayRestartMenu();
+            }
+
+        }
+
+        int GetInput(string description, string option1, string option2, bool pauseInvaild = false)
+        {
+            Console.WriteLine(description);
+            Console.WriteLine("1. " + option1);
+            Console.WriteLine("2. " + option2);
+
+            string input = Console.ReadLine();
+            int choice = 0;
+
+            if (input == "1")
+            {
+                choice = 1;
+            }
+            else if (input == "2")
+            {
+                choice = 2;
+            }
+            else
+            {
+                Console.WriteLine("Invaild Input");
+                if (pauseInvaild)
+                {
+                    Console.ReadKey(true);
+                }
+            }
+
+            return choice;
+        }
+
+        void DisplayStartMenu()
+        {
+            GetInput("description", "option1", "option2");
+        }
+
+        void DisplayRestartMenu()
+        {
+
         }
 
         void Update()
         {
             Battle();
             UpdateCurrentMonsters();
+
+            DisplayRestartMenu();
             Console.ReadKey(true);
             Console.Clear();
         }
+
+
+
 
         Monster GetMonster(int monsterIndex)
         {
@@ -88,19 +155,19 @@ namespace FightingSimulation
             monster.defense = 1;
             monster.health = 1;
 
-            if (monsterIndex == 1)
+            if (monsterIndex == 0)
             {
                 monster = unclePhil;
             }
-            else if (monsterIndex == 2)
+            else if (monsterIndex == 1)
             {
                 monster = backupWompus;
             }
-            else if (monsterIndex == 3)
+            else if (monsterIndex == 2)
             {
                 monster = wompus;
             }
-            else if (monsterIndex == 4)
+            else if (monsterIndex == 3)
             {
                 monster = thwompus;
             }
@@ -134,7 +201,7 @@ namespace FightingSimulation
         {
             //If monster 1 has died..
             if (currentMonster1.health <= 0)
-            {   
+            {
                 //...increment the current monster index and swap out the monster
                 currentMonsterIndex++;
                 currentMonster1 = GetMonster(currentMonsterIndex);
@@ -229,7 +296,8 @@ namespace FightingSimulation
 
         float CalculateDamage(Monster Attacker, Monster Defender)
         {
-            return Attacker.attack - Defender.defense; 
+            return Attacker.attack - Defender.defense;
         }
+
     }
 }
