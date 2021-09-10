@@ -20,13 +20,17 @@ namespace FightingSimulation
         Monster currentMonster1;
         Monster currentMonster2;
         int test = 1;
+
         //Monsters
         Monster wompus;
         Monster thwompus;
         Monster backupWompus;
         Monster unclePhil;
+        Monster[] monsters;  
+
         int currentScene = 0;
         int currentMonsterIndex = 0;
+        
         public void Run()
         {
 
@@ -67,6 +71,8 @@ namespace FightingSimulation
             unclePhil.defense = 0f;
             unclePhil.health = 1.0f;
 
+            monsters = new Monster[] { wompus, thwompus, backupWompus, unclePhil };
+
             ResetCurrentMonsters();
         }
 
@@ -85,14 +91,16 @@ namespace FightingSimulation
         {
             Console.WriteLine("Guhbah fren");
         }
-
+        /// <summary>
+        /// Resests the current fighter to the next fighter
+        /// </summary>
         void ResetCurrentMonsters()
         {
             currentMonsterIndex = 0;
             //Set Starting fighters
-            currentMonster1 = GetMonster(currentMonsterIndex);
+            currentMonster1 = monsters[currentMonsterIndex];
             currentMonsterIndex++;
-            currentMonster2 = GetMonster(currentMonsterIndex);
+            currentMonster2 = monsters[currentMonsterIndex];
         }
 
         void UpdateCurrentScene()
@@ -208,33 +216,6 @@ namespace FightingSimulation
             }
         }
 
-        Monster GetMonster(int monsterIndex)
-        {
-            Monster monster;
-            monster.name = "None";
-            monster.attack = 1;
-            monster.defense = 1;
-            monster.health = 1;
-
-            if (monsterIndex == 0)
-            {
-                monster = unclePhil;
-            }
-            else if (monsterIndex == 1)
-            {
-                monster = backupWompus;
-            }
-            else if (monsterIndex == 2)
-            {
-                monster = wompus;
-            }
-            else if (monsterIndex == 3)
-            {
-                monster = thwompus;
-            }
-
-            return monster;
-        }
         /// <summary>
         /// Simulates one turn in the current monster fight
         /// </summary>
@@ -254,33 +235,57 @@ namespace FightingSimulation
             damageTaken = Fight(currentMonster2, ref currentMonster1);
             Console.WriteLine(currentMonster1.name + " has taken " + damageTaken);
         }
+
+        bool TryEndSimulation()
+        {
+            bool simulationOver = currentMonsterIndex >= monsters.Length;
+
+            if(simulationOver)
+            {
+                currentScene = 2;
+            }
+
+            return simulationOver;
+        }
+
         /// <summary>
         /// Updates the current monster to the next monster when one dies.
         /// Ends the game if all monster in th elist have been used.
         /// </summary>
         void UpdateCurrentMonsters()
         {
+
             //If monster 1 has died..
             if (currentMonster1.health <= 0)
             {
                 //...increment the current monster index and swap out the monster
                 currentMonsterIndex++;
-                currentMonster1 = GetMonster(currentMonsterIndex);
+
+                if(TryEndSimulation())
+                {
+                    return;
+                }
+
+                currentMonster1 = monsters[currentMonsterIndex];
             }
+ 
             //If monster 2 has died..
             if (currentMonster2.health <= 0)
             {
                 //...increment the current monster index and swap out the monster
                 currentMonsterIndex++;
-                currentMonster2 = GetMonster(currentMonsterIndex);
-            }
-            //If either monster is set to "None" and last monster has been set..
-            if (currentMonster2.name == "None" || currentMonster1.name == "None" && currentMonsterIndex >= 4)
-            {
-                //...go to restart menue
-                currentScene = 2;
+
+                if (TryEndSimulation())
+                {
+                    return;
+                }
+
+
+                currentMonster2 = monsters[currentMonsterIndex];
 
             }
+            //If either monster is set to "None" and last monster has been set..
+          
         }
 
         String StartBattle(ref Monster monster1, ref Monster monster2)
